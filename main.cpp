@@ -102,7 +102,7 @@ void FXOS8700CQ(){
                 acc16 -= UINT14_MAX;
             t[2] = ((float)acc16) / 4096.0f;
 
-            float lenth_1, lenth_2, ans;
+          /*  float lenth_1, lenth_2, ans;
             lenth_1 = pow( (pow(t[0], 2) + pow(t[1], 2) + pow(t[2], 2)),0.5);
             lenth_2 = pow((pow(x, 2) + pow(y, 2) + pow(z, 2)), 0.5);
             ans = (t[0]*x + t[1]*y + t[2]*z)/lenth_1*lenth_2;
@@ -110,7 +110,7 @@ void FXOS8700CQ(){
                 tilt[i] = 1;
             }else{
                 tilt[i] = 0;
-            }
+            }*/
           /*  printf("FXOS8700Q ACC: X=%1.4f(%x%x) Y=%1.4f(%x%x) Z=%1.4f(%x%x)\r\n",\
                     t[0], res[0], res[1],\
                     t[1], res[2], res[3],\
@@ -125,6 +125,13 @@ void FXOS8700CQ(){
             pc.printf("%d\r\n", tilt[i]);*/
             wait(0.1);
         }
+        for (int i = 0; i < 100; i++){
+            pc.printf("%1.4f\r\n", X[i]);
+            pc.printf("%1.4f\r\n", Y[i]);
+            pc.printf("%1.4f\r\n", Z[i]);
+            pc.printf("%d\r\n", tilt[i]);
+            wait(0.1);
+        }
   //  }
 }
 void blink(){
@@ -134,16 +141,7 @@ void blink(){
         i++;
         wait(0.1);
     }
-    for (int i = 0; i < 100; i++){
-        pc.printf("%1.4f\r\n", X[i]);
-        wait(0.1);
-        pc.printf("%1.4f\r\n", Y[i]);
-        wait(0.1);
-        pc.printf("%1.4f\r\n", Z[i]);
-        wait(0.1);
-        pc.printf("%d\r\n", tilt[i]);
-        wait(0.1);
-    }
+    
 }
 void btn_fall_irq(){
     queue1.call(&FXOS8700CQ);
@@ -152,7 +150,8 @@ void btn_fall_irq(){
 }
 int sample = 100;
 int main() {
-    FXOS8700CQ_0();
+    pc.baud(115200);
+  //  FXOS8700CQ_0();
   /*  while(1){
         pc.printf("%1.3f\r\n", x);
     }*/
