@@ -30,7 +30,10 @@ EventQueue queue2(32 * EVENTS_EVENT_SIZE);
 Thread thread1;
 Thread thread2;
 
-int tilt;
+int tilt[100];
+float X[100];
+float Y[100];
+float Z[100];
 I2C i2c( PTD9,PTD8);
 Serial pc(USBTX, USBRX);
 int m_addr = FXOS8700CQ_SLAVE_ADDR1;
@@ -79,7 +82,8 @@ void FXOS8700CQ(){
     uint8_t who_am_i, data[2], res[6];
     int16_t acc16;
     float t[3];
-  // while (true) {
+
+ // while (true) {
         for (int i = 0; i < 100; i++){
             FXOS8700CQ_readRegs(FXOS8700Q_OUT_X_MSB, res, 6);
 
@@ -99,47 +103,62 @@ void FXOS8700CQ(){
             t[2] = ((float)acc16) / 4096.0f;
 
             float lenth_1, lenth_2, ans;
-            lenth_1 = pow(0.5, (pow(2, t[0]) + pow(2, t[1]) + pow(2, t[2])));
-            lenth_2 = pow(0.5, (pow(2, x) + pow(2, y) + pow(2, z)));
+            lenth_1 = pow( (pow(t[0], 2) + pow(t[1], 2) + pow(t[2], 2)),0.5);
+            lenth_2 = pow((pow(x, 2) + pow(y, 2) + pow(z, 2)), 0.5);
             ans = (t[0]*x + t[1]*y + t[2]*z)/lenth_1*lenth_2;
-            if (ans >= 1){
-                tilt = 1;
+            if (ans <= 1/pow(2, 0.5)){
+                tilt[i] = 1;
             }else{
-                tilt = 0;
+                tilt[i] = 0;
             }
           /*  printf("FXOS8700Q ACC: X=%1.4f(%x%x) Y=%1.4f(%x%x) Z=%1.4f(%x%x)\r\n",\
                     t[0], res[0], res[1],\
                     t[1], res[2], res[3],\
                     t[2], res[4], res[5]\
             );*/
-            pc.printf("%1.4f\r\n", t[0]);
-            pc.printf("%1.4f\r\n", t[1]);
-            pc.printf("%1.4f\r\n", t[2]);
-            pc.printf("%d\r\n", tilt);
+            X[i] = t[0];
+            Y[i] = t[1];
+            Z[i] = t[2];
+            pc.printf("%1.3f\r\n", t[0]);
+            pc.printf("%1.3f\r\n", t[1]);
+            pc.printf("%1.3f\r\n", t[2]);
+            pc.printf("%d\r\n", tilt[i]);
             wait(0.1);
         }
   //  }
 }
 void blink(){
     int i = 0;
-    while(i < 100){
+        while(i < 100){
         led1 = !led1;
         i++;
         wait(0.1);
+
     }
+    
     
 }
 void btn_fall_irq(){
     queue1.call(&FXOS8700CQ);
+    queue2.call(&blink);
 }
 int sample = 100;
 int main() {
     FXOS8700CQ_0();
-    pc.printf("%1.3f\r\n", x);
+  /*  while(1){
+        pc.printf("%1.3f\r\n", x);
+    }*/
+    
     thread1.start(callback(&queue1, &EventQueue::dispatch_forever));
     thread2.start(callback(&queue2, &EventQueue::dispatch_forever));
     sw2.rise(queue1.event(btn_fall_irq));
-    sw2.rise(queue2.event(blink));
+    for (int i = 0; i < 100; i++){
+        pc.printf("x = %1.4f\r\n", X[i]);
+        pc.printf("y = %1.4f\r\n", Y[i]);
+        pc.printf("z = %1.4f\r\n", Z[i]);
+        pc.printf("t = %d\r\n", tilt[i]);
+    }
+   // sw2.rise(queue2.event(blink));
 }
 
 void FXOS8700CQ_readRegs(int addr, uint8_t * data, int len) {
