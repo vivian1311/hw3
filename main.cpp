@@ -135,12 +135,14 @@ void blink(){
         wait(0.1);
     }
     for (int i = 0; i < 100; i++){
-        pc.printf("%d\r\n",i);
-        pc.printf("x = %1.4f\r\n", X[i]);
-        pc.printf("y = %1.4f\r\n", Y[i]);
-        pc.printf("z = %1.4f\r\n", Z[i]);
-        pc.printf("t = %d\r\n", tilt[i]);
-
+        pc.printf("%1.4f\r\n", X[i]);
+        wait(0.1);
+        pc.printf("%1.4f\r\n", Y[i]);
+        wait(0.1);
+        pc.printf("%1.4f\r\n", Z[i]);
+        wait(0.1);
+        pc.printf("%d\r\n", tilt[i]);
+        wait(0.1);
     }
 }
 void btn_fall_irq(){
