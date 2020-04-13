@@ -79,13 +79,7 @@ void FXOS8700CQ(){
     uint8_t who_am_i, data[2], res[6];
     int16_t acc16;
     float t[3];
-
-    FXOS8700CQ_readRegs( FXOS8700Q_CTRL_REG1, &data[1], 1);
-    data[1] |= 0x01;
-    data[0] = FXOS8700Q_CTRL_REG1;
-    FXOS8700CQ_writeRegs(data, 2);
-    FXOS8700CQ_readRegs(FXOS8700Q_WHOAMI, &who_am_i, 1);
-    while (true) {
+  // while (true) {
         for (int i = 0; i < 100; i++){
             FXOS8700CQ_readRegs(FXOS8700Q_OUT_X_MSB, res, 6);
 
@@ -124,7 +118,7 @@ void FXOS8700CQ(){
             pc.printf("%d\r\n", tilt);
             wait(0.1);
         }
-    }
+  //  }
 }
 void blink(){
     int i = 0;
