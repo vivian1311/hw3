@@ -119,28 +119,34 @@ void FXOS8700CQ(){
             X[i] = t[0];
             Y[i] = t[1];
             Z[i] = t[2];
-            pc.printf("%1.3f\r\n", t[0]);
-            pc.printf("%1.3f\r\n", t[1]);
-            pc.printf("%1.3f\r\n", t[2]);
-            pc.printf("%d\r\n", tilt[i]);
+        /*    pc.printf("%1.3f\r\n", X[i]);
+            pc.printf("%1.3f\r\n", Y[i]);
+            pc.printf("%1.3f\r\n", Z[i]);
+            pc.printf("%d\r\n", tilt[i]);*/
             wait(0.1);
         }
   //  }
 }
 void blink(){
     int i = 0;
-        while(i < 100){
+    while(i < 100){
         led1 = !led1;
         i++;
         wait(0.1);
+    }
+    for (int i = 0; i < 100; i++){
+        pc.printf("%d\r\n",i);
+        pc.printf("x = %1.4f\r\n", X[i]);
+        pc.printf("y = %1.4f\r\n", Y[i]);
+        pc.printf("z = %1.4f\r\n", Z[i]);
+        pc.printf("t = %d\r\n", tilt[i]);
 
     }
-    
-    
 }
 void btn_fall_irq(){
     queue1.call(&FXOS8700CQ);
     queue2.call(&blink);
+
 }
 int sample = 100;
 int main() {
@@ -152,12 +158,9 @@ int main() {
     thread1.start(callback(&queue1, &EventQueue::dispatch_forever));
     thread2.start(callback(&queue2, &EventQueue::dispatch_forever));
     sw2.rise(queue1.event(btn_fall_irq));
-    for (int i = 0; i < 100; i++){
-        pc.printf("x = %1.4f\r\n", X[i]);
-        pc.printf("y = %1.4f\r\n", Y[i]);
-        pc.printf("z = %1.4f\r\n", Z[i]);
-        pc.printf("t = %d\r\n", tilt[i]);
-    }
+    
+
+    
    // sw2.rise(queue2.event(blink));
 }
 
