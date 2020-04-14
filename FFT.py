@@ -4,7 +4,7 @@ import serial
 import time
 
 Fs = 100.0;  # sampling rate
-Ts = 1.0/Fs; # sampling interval
+Ts = 1.0/Fs; 
 t = np.arange(0, 1, Ts)
 y_X = np.arange(0, 1, Ts)
 y_Y = np.arange(0, 1, Ts)
